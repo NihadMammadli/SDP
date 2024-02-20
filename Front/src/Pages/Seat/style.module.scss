@@ -1,0 +1,25 @@
+.Toptext {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.Button {
+    margin: 10px;
+    background-color: white;
+    width: 8%;
+    height: 40px;
+    border-radius: 5px;
+    transition: all 0.5s;
+    border: 1px solid rgb(43, 155, 225);
+
+    &:hover {
+        color: rgb(34, 125, 182);
+        border: 1px solid rgb(24, 104, 153) !important;
+    }
+}
+
+.ButtonText {
+    color: rgb(43, 155, 225);
+    font-size: 18px;
+    font-weight: 500 !important;
+}
