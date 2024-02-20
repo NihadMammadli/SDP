@@ -24,3 +24,4 @@ Front/dist-ssr
 *.sw?
 
 Back/data
+Back/node_modules
