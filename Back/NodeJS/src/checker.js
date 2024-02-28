@@ -124,9 +124,9 @@ async function processAllProblems(jsonFilePath) {
         console.log(jsonFilePath)
         const jsonData = JSON.parse(await readFileAsync(jsonFilePath, 'utf-8'));
 
-        const jsonString = JSON.stringify(jsonData, null, 4); 
+        // const jsonString = JSON.stringify(jsonData, null, 4); 
 
-        await writeFileAsync("./output.txt", jsonString);
+        // await writeFileAsync("./output.txt", jsonString);
 
         comparer(jsonData);
     } catch (error) {
