@@ -2,7 +2,6 @@ const { Client } = require('pg');
 const exec = require('child_process').exec;
 const fs = require('fs');
 
-// PostgreSQL database configuration
 const dbConfig = {
     user: 'cmsuser',
     password: '1234',
@@ -38,7 +37,6 @@ client.query(query, (err, res) => {
     const submissions = res.rows;
     const submissionMap = {};
 
-    // Group submissions by task_id and then by participation_id
     submissions.forEach(submission => {
         const { id, participation_id, task_id, timestamp } = submission;
 

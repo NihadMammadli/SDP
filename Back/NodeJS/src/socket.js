@@ -1,6 +1,8 @@
 const { Client } = require('pg');
 const { exec } = require('child_process');
+const path = require('path');
 const fs = require('fs');
+const checker = require('./checker.js');
 
 const client = new Client({
     user: 'cmsuser',
@@ -32,8 +34,8 @@ client.connect()
 async function handleNotification(payload) {
     try {
         const query = `
-            SELECT * FROM submissions;
-        `;
+                SELECT * FROM submissions;
+            `;
 
         const result = await client.query(query);
         if (result.rows && result.rows.length > 0) {
@@ -57,7 +59,9 @@ async function handleNotification(payload) {
 
                     output.code = stdout.trim();
 
-                    updateOrCreateJson(output);
+                    updateOrCreateJson(output, () => {
+                        checker.processAllProblems("./output.json");
+                    });
                 });
             } else {
                 console.log("No new data.");
@@ -70,38 +74,60 @@ async function handleNotification(payload) {
     }
 }
 
-function updateOrCreateJson(data) {
+function updateOrCreateJson(data, callback) {
     fs.readFile('output.json', (err, jsonString) => {
         if (err) {
             console.error('Error reading JSON file:', err);
             return;
         }
-        
+
         let json = {};
         if (jsonString) {
             json = JSON.parse(jsonString);
         }
-        
+
         const { task_id, participation_id, submission_id, code, submission_date } = data;
-        
+
         if (!json[task_id]) {
             json[task_id] = {};
         }
-        
+
+        if (json[task_id] && json[task_id][participation_id] && json[task_id][participation_id][0]?.submission_id !== submission_id) {
+            updateComparisonStatus(json[task_id][participation_id][0]?.submission_id);
+        }
+
         delete json[task_id][participation_id];
         
-a        json[task_id][participation_id] = [{
+        json[task_id][participation_id] = [{
             submission_id,
             code,
             submission_date
         }];
-        
+
         fs.writeFile('output.json', JSON.stringify(json, null, 4), (err) => {
             if (err) {
                 console.error('Error writing JSON file', err);
             } else {
                 console.log('JSON file updated successfully');
             }
+
+            callback();
         });
     });
+}
+
+async function updateComparisonStatus(submissionId) {
+    try {
+        const updateQuery = {
+            text: 'UPDATE comparisons SET status = $1 WHERE submission_id = $2 OR compared_contestant_id = $2',
+            values: [0, submissionId],
+        };
+
+        const { rowCount } = await client.query(updateQuery);
+
+        console.log(`${rowCount} rows updated`);
+
+    } catch (error) {
+        console.error('Error updating comparison status:', error);
+    }
 }

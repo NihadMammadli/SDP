@@ -1,13 +1,18 @@
 const fs = require('fs');
 const { promisify } = require('util');
-const { exec } = require('child_process');
 const { EOL } = require('os');
+const { Client } = require('pg');
+
 const path = require('path');
-
+const dbConfig = {
+    user: 'cmsuser',
+    password: '1234',
+    database: 'cmsdb',
+    host: 'localhost',
+    port: 5432,
+};
 const readFileAsync = promisify(fs.readFile);
-const readdirAsync = promisify(fs.readdir);
-const execAsync = promisify(exec);
-
+const writeFileAsync = promisify(fs.writeFile);
 function remover(code) {
     const codeWithoutComments = [];
     let inMultilineComment = false;
@@ -56,8 +61,7 @@ function lcs(X, Y) {
     return dp[m][n];
 }
 
-async function cppChecker(file1, file2) {
-    const [code1, code2] = await Promise.all([readFileAsync(file1, 'utf-8'), readFileAsync(file2, 'utf-8')]);
+async function cppChecker(code1, code2) {
     const code1WithoutComments = remover(code1.split(EOL));
     const code2WithoutComments = remover(code2.split(EOL));
 
@@ -70,61 +74,67 @@ async function cppChecker(file1, file2) {
     return { similarity, commonLines };
 }
 
-async function comparer(folderPath, jsonFolderPath) {
+async function comparer(jsonData) {
+    const client = new Client(dbConfig);
+    await client.connect();
+
     try {
-        const files = await readdirAsync(folderPath);
-        const cppFiles = files.filter(file => file.endsWith('.cpp'));
+        for (const taskID in jsonData) {
+            const submissions = jsonData[taskID];
+            for (const [file1ID, file1Data] of Object.entries(submissions)) {
+                for (const [file2ID, file2Data] of Object.entries(submissions)) {
+                    if (file1ID !== file2ID) {
+                        const { similarity, commonLines } = await cppChecker(file1Data[0].code, file2Data[0].code);
+                        const outerKey = file1Data[0]?.submission_id;
+                        const innerKey = file2Data[0]?.submission_id;
 
-        if (cppFiles.length < 2) {
-            console.log("There are not enough C++ files in the folder for comparison.");
-            return;
-        }
+                        const existingComparisonQuery = {
+                            text: 'SELECT * FROM comparisons WHERE submission_id = $1 AND compared_contestant_id = $2',
+                            values: [outerKey, innerKey],
+                        };
+                        const { rowCount } = await client.query(existingComparisonQuery);
 
-        const tasks = [];
-        for (let i = 0; i < cppFiles.length; i++) {
-            for (let j = 0; j < cppFiles.length; j++) {
-                const file1Path = path.join(folderPath, cppFiles[i]);
-                const file2Path = path.join(folderPath, cppFiles[j]);
+                        if (rowCount === 0) {
+                            const commonLinesList = Array.from(commonLines);
 
-                if (cppFiles[i].charAt(0) === cppFiles[j].charAt(0)) {
-                    continue;
+                            const insertQuery = {
+                                text: 'INSERT INTO comparisons(submission_id, compared_contestant_id, similarity_score, status) VALUES($1, $2, $3, $4)',
+                                values: [outerKey, innerKey, similarity * 100, 1], 
+                            };
+
+                            await client.query(insertQuery);
+
+                            console.log(`Inserted comparison data for submission ${outerKey} and submission ${innerKey} in task ${taskID}`);
+                        } else {
+                            console.log(`Comparison data for submission ${outerKey} and submission ${innerKey} already exists in the database`);
+                        }
+                    }
                 }
-
-                const task = cppChecker(file1Path, file2Path);
-                tasks.push({ file1Name: cppFiles[i], file2Name: cppFiles[j], task });
             }
         }
+    } catch (error) {
+        console.error('Error occurred:', error);
+    } finally {
+        await client.end();
+    }
+}
 
-        const results = {};
-        for (const { file1Name, file2Name, task } of tasks) {
-            const { similarity, commonLines } = await task;
-            const file1NameWithoutExtension = path.parse(file1Name).name;
-            const file2NameWithoutExtension = path.parse(file2Name).name;
+async function processAllProblems(jsonFilePath) {
+    try {
+        console.log(jsonFilePath)
+        const jsonData = JSON.parse(await readFileAsync(jsonFilePath, 'utf-8'));
 
-            const commonLinesList = Array.from(commonLines);
+        const jsonString = JSON.stringify(jsonData, null, 4); 
 
-            const outerKey = file1NameWithoutExtension;
-            const innerKey = file2NameWithoutExtension;
+        await writeFileAsync("./output.txt", jsonString);
 
-            results[outerKey] = results[outerKey] || {};
-            results[outerKey][innerKey] = { similarity: similarity * 100, commonLines: commonLinesList };
-
-            console.log(`${file1NameWithoutExtension}'s code's similarity to ${file2NameWithoutExtension}'s code is: ${similarity * 100}%`);
-        }
-
-        const jsonFilename = path.join(jsonFolderPath, "comparison_results.json");
-        fs.writeFileSync(jsonFilename, JSON.stringify(results, null, 4));
-        console.log(`Comparison results are saved in ${jsonFilename}`);
+        comparer(jsonData);
     } catch (error) {
         console.error('Error occurred:', error);
     }
 }
 
-function processAllProblems(sortedFolderPath, jsonFolderPath) {
-    comparer(sortedFolderPath, jsonFolderPath);
-}
+module.exports = { processAllProblems };
 
-const sortedFolderPath = "/home/nihad/Desktop/Projects/SDP/Back/data/codes";
-const jsonFolderPath = "/home/nihad/Desktop/Projects/SDP/Back/data/json";
-
-processAllProblems(sortedFolderPath, jsonFolderPath);
+// const jsonFilePath = process.argv[2]; 
+// processAllProblems(jsonFilePath);

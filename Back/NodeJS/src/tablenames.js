@@ -13,17 +13,13 @@ const client = new Client(dbConfig);
 client.connect()
   .then(() => {
     const query = `
-      SELECT table_name
-      FROM information_schema.tables
-      WHERE table_schema = 'public'
-      AND table_type = 'BASE TABLE';
+      SELECT * from sections;
     `;
 
     return client.query(query);
   })
   .then(result => {
-    const tableNames = result.rows.map(row => row.table_name);
-    console.log('Tables in the database:', tableNames);
+    console.log('Tables in the database:', result.rows);
   })
   .catch(err => console.error('Error:', err))
   .finally(() => {
