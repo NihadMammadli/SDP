@@ -3,7 +3,6 @@ const { Client } = require('pg');
 const fs = require('fs').promises;
 const path = require('path');
 const cors = require('cors');
-const submissions = require('./output.json');
 
 const app = express();
 const port = 10000;
@@ -39,7 +38,8 @@ app.get('/cms/sections', async (req, res) => {
         const sectionsWithoutPasswords = result.rows.map(section => ({
             section: section.section,
             users: section.users.map(user => {
-                
+                delete require.cache[require.resolve('./output.json')];
+                const submissions = require('./output.json');
                 const userSubmissions = Object.values(submissions).flatMap(taskSubmissions =>
                     taskSubmissions[user.id] || []
                 );
@@ -55,7 +55,6 @@ app.get('/cms/sections', async (req, res) => {
                 };
             })
         }));
-
 
         res.json(sectionsWithoutPasswords);
     } catch (err) {
