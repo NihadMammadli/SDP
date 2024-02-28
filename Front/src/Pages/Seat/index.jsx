@@ -1,101 +1,54 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import { Row, Col, Table, Typography, message, Button } from "antd";
-import style from './style.module.scss'
-import View from './View'
-import axios from "axios"
+import style from './style.module.scss';
+import axios from "axios";
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
+  const [sections, setSections] = useState([]);
 
-  const [users, setUsers] = useState([])
-  const [viewOpen, setViewOpen] = useState(false)
-  const [viewData, setViewData] = useState(false)
-
-  const getData = () => {
-    axios.get("http://localhost:9999/api/users").then(function (response) {
-      messageApi.success('Success');
-      setUsers(response?.data?.users)
-    })
-  }
-
-  const synchronizeData = () => {
-    axios.get("http://localhost:10000/api/synchronize").then(function (response) {
-      if (response.status == 200) {
-        messageApi.success('Data Synchronized');
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await axios.get('http://localhost:10000/cms/sections');
+        setSections(response.data);
+        console.log(response.data)
+      } catch (error) {
+        console.error('Error fetching sections:', error);
+        messageApi.error('Error fetching sections');
       }
-    })
-  }
+    };
 
-  const showView = (data, index) => {
-    setViewOpen(true)
-    setViewData(data)
-  }
+    const interval = setInterval(() => {
+      fetchSections();
+    }, 5000);
 
-  const viewClose = () => {
-    setViewOpen(false)
-  }
-
-  const columns = [
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>First Name</div>,
-      dataIndex: 'first_name',
-      key: 'first_name',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Last Name</div>,
-      dataIndex: 'last_name',
-      key: 'last_name',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Username</div>,
-      dataIndex: 'username',
-      key: 'username',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-  ];
-
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
       {contextHolder}
-      <div>
-        <Row style={{ height: "10%", borderBottom: "1px solid black" }}>
-          <Col style={{ marginBottom: "10px", justifyContent: "end", display: "flex", alignItems: "center", height: "60px" }} span={24}>
-            <Button className={style.Button} onClick={() => getData()}>
-              <Typography  className={style.ButtonText}>
-                Get Data
-              </Typography>
-            </Button>
-            <Button className={style.Button} onClick={() => synchronizeData()}>
-              <Typography  className={style.ButtonText}>
-                Synchronize
-              </Typography>
-            </Button>
-          </Col>
+        <Row gutter={[16, 16]}>
+          {sections?.map(section => (
+            <Col key={section?.id} span={24 / sections?.length} style={{ border: "1px solid black", borderRadius: "6px", padding: "5px" }}>
+              <Row style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Typography.Title level={3}>Section: {section?.section.toUpperCase()}</Typography.Title>
+              </Row>
+              <Row gutter={[16, 16]}>
+                {section?.users.map(user => (
+                  <Col key={user.id} span={8}>
+                    <div style={{ width: '100px', height: '100px', backgroundColor: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <Typography.Text>{user.first_name} {user.last_name}</Typography.Text>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+          ))}
         </Row>
-        <Row style={{ height: "90%" }}>
-          <Col span={24}>
-            <Table
-              columns={columns}
-              pagination={false}
-              dataSource={users}
-              onRow={(record, rowIndex) => ({ onClick: () => showView(record, rowIndex) })}
-            />
-          </Col >
-        </Row>
-      </div>
-
-      <View open={viewOpen} close={viewClose} data={viewData} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
