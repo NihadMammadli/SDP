@@ -46,7 +46,6 @@ const App = (props) => {
                                                 <Typography style={{ padding: "20px", border: '1px solid black', borderRadius: "5px" }}>{val?.content}</Typography>
                                                 {val?.files && val.files.map((file, fileIndex) => (
                                                     <div style={{ marginTop: "10px", paddingBottom:"20px", borderBottom: "1px solid black" }} key={fileIndex}>
-                                                        {console.log(val, file)}
                                                         <Typography  style={{ fontSize: "12px", fontWeight: "600", marginBottom:"10px"}}>
                                                             Similarity with submission number {file.fileId.substring(2, 4)} from user with id {file.fileId.substring(0, 1)}:
                                                         </Typography>
