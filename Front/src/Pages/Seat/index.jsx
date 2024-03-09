@@ -11,6 +11,8 @@ function App() {
 
   const [sections, setSections] = useState([]);
   const [lastSubmitted, setLastSubmitted] = useState([]);
+  const [lastSimilarityAlarm, setLastSimilarityAlarm] = useState([]);
+  const [lastScoringPreceding, setLastScoringPreceding] = useState([]);
   const [blink, setBlink] = useState(false);
 
   const [viewOpen, setViewOpen] = useState(false)
@@ -25,16 +27,14 @@ function App() {
     setViewOpen(false)
   }
 
-  const handleClick = () => {
-    showView(user);
-  };
 
   const fetchSections = async () => {
     setLastSubmitted([])
+    setLastSimilarityAlarm([])
+    setLastScoringPreceding([])
     try {
       const response = await axios.get('http://localhost:10000/cms/sections');
       setSections(response.data);
-      console.log(response.data)
     } catch (error) {
       console.error('Error fetching sections:', error);
       messageApi.error('Error fetching sections');
@@ -59,8 +59,17 @@ function App() {
     });
 
     socket.on('similarityAlarm', data => {
-      console.log(data);
-      messageApi.error(data);
+      console.log(data)
+      messageApi.error(data.message);
+      setLastSimilarityAlarm(data.id)
+      setTimeout(fetchSections, 5000);
+    });
+
+    socket.on('scoringPreceding', data => {
+      console.log(data)
+      messageApi.error(data.message);
+      setLastScoringPreceding(data.id)
+      setTimeout(fetchSections, 5000);
     });
 
     return () => socket.disconnect();
@@ -78,18 +87,20 @@ function App() {
             <Row gutter={[16, 16]}>
               {section?.users.map(user => (
                 <Col key={user?.id} span={8} style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                  <div onClick={handleClick} style={{
-                    width: '100px',
-                    borderRadius: "5px",
-                    border: "0.5px solid black",
-                    height: '100px',
-                    backgroundColor: user?.id === lastSubmitted?.participation_id ? (blink ? 'green' : 'white') : 'white',
-                    display: 'flex',
-                    flexDirection: "column",
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    transition: 'background-color 0.5s ease'
-                  }}>
+                  <div
+                    // onClick={(_) => showView(user)}
+                    style={{
+                      width: '100px',
+                      borderRadius: "5px",
+                      border: "0.5px solid black",
+                      height: '100px',
+                      backgroundColor: user?.id === lastSubmitted?.participation_id ? (user?.id === lastSimilarityAlarm ? 'red' : (user?.id === lastScoringPreceding ? 'yellow' : (blink ? 'green' : 'white'))) : 'white',
+                      display: 'flex',
+                      flexDirection: "column",
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      transition: 'background-color 0.5s ease'
+                    }}>
                     <Typography.Text style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{user?.first_name}</Typography.Text>
                     <Typography.Text style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{user?.last_name}</Typography.Text>
                   </div>
