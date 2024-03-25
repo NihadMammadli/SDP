@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Menu } from 'antd';
 
 import {
-  HomeOutlined,
+  BellOutlined,
+  UserOutlined,
   AppstoreOutlined,
-  ReadOutlined,
 } from "@ant-design/icons";
 
 const getItem = (label, key, url, icon, children) => ({
@@ -18,22 +18,22 @@ const getItem = (label, key, url, icon, children) => ({
 
 const items = [
   getItem(
-    "Notification Based",
-    "notification",
-    `${import.meta.env.VITE_NOTIFICATION}`,
-    <HomeOutlined />
-  ),
-  getItem(
-    "User Based",
+    "Competitors",
     "user",
     `${import.meta.env.VITE_USER}`,
-    <AppstoreOutlined />
+    <UserOutlined />
   ),
   getItem(
-    "Seat Based",
+    "Alarms",
+    "notification",
+    `${import.meta.env.VITE_NOTIFICATION}`,
+    <BellOutlined />
+  ),
+  getItem(
+    "Seats",
     "seat",
     `${import.meta.env.VITE_SEAT}`,
-    <ReadOutlined />
+    <AppstoreOutlined />
   ),
 ];
 
@@ -62,7 +62,7 @@ const Index = () => {
   return (
     <Menu
     defaultSelectedKeys="user"
-      theme="dark"
+      theme="light"
       mode="inline"
       items={items}
       onSelect={onSelect}

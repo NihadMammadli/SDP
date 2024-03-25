@@ -12,13 +12,14 @@ const Index = () => {
   return (
     <Layout className={style.container}>
       <Sider
+      theme={"light"}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         width={260}
         collapsedWidth={75}
       >
-        <div style={{ border: "1px solid black" }}>
+        <div style={{ borderRadius: "5px" }}>
           <div className={style.logo}>
             <Image
               width={collapsed ? 50 : 155}

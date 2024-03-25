@@ -1,18 +1,20 @@
 .Toptext {
-    font-size: 40px;
-    font-weight: 600;
-    color: rgb(0, 0, 0);
+    font-size: 14px;
+    font-weight: 200;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: start;
 }
 
 .Header{
-    border: 1px solid black;
+    border: 1px solid #1677FF;
     border-radius: 5px;
     margin: 5px 20px 0px 20px;
-    padding: 0;
-    background-color: #efefef;
-    justify-content: center;
+    padding: 3px 0px 0px 20px;
+    background-color: #ffffff;
     display: flex;
     align-items: center;
-    height: 60px !important; 
+    height: 40px !important; 
     width: calc(100% - 40px);
 }

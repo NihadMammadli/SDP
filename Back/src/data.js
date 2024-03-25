@@ -65,6 +65,27 @@ app.get('/cms/sections', async (req, res) => {
     }
 });
 
+app.get('/cms/users', async (req, res) => {
+    const client = createClient();
+
+    try {
+        await client.connect();
+
+        const query = `
+            SELECT id, first_name, last_name, username, email FROM users
+        `;
+
+        const result = await client.query(query);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
+    }
+});
+
 app.get('/cms/comparisons/:id', async (req, res) => {
     const { id } = req.params;
     const client = createClient();
