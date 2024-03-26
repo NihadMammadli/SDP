@@ -1,8 +1,8 @@
 .alarmTopRow{
     color:rgb(0, 0, 0);
-    font-size: 20px;
+    font-size: 24px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     font-weight: 300;
 }
@@ -14,3 +14,19 @@
     align-items: center;
     font-weight: 200;
 }
+
+.red {
+    background-color: red;
+  }
+  
+  .green {
+    background-color: green;
+  }
+  
+  .yellow {
+    background-color: yellow;
+  }
+  
+  .orange {
+    background-color: orange;
+  }

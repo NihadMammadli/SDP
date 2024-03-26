@@ -97,7 +97,7 @@ async function comparer(jsonData, io, participator) {
                                         if (row.subject && (row.subject.includes('#wc') || row.subject.includes('#print'))) {
                                             if (participator == file1ID) {
                                                 const message = {
-                                                    message: `⚠️ SCORING PRECEDING ANOTHER EVENT ⚠️ \n is detected by user with id ${participator}`,
+                                                    message: `⚠️ SCORING PRECEDING ANOTHER EVENT ⚠️ \n Contestant ${participator} submitted a code that has ${similarity * 100}% after an event related to that user!`,
                                                     id: participator
                                                 }
                                                 const insertQuery = {
@@ -115,7 +115,7 @@ async function comparer(jsonData, io, participator) {
                                 }
                                 else {
                                     const message = {
-                                        message: `⚠️ SIMILARITY ALARM ⚠️ \n is detected by user with id ${participator}`,
+                                        message: `⚠️ SIMILARITY ALARM ⚠️ \n Contestant ${participator} submitted a code that has ${similarity * 100}% similarity with the code of Contestant ${file2ID}!`,
                                         id: participator
                                     }
                                     const insertQuery = {

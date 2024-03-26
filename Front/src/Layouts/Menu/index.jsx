@@ -17,7 +17,6 @@ const getItem = (label, key, url, icon, children) => ({
 });
 
 const { pathname } = window.location
-console.log(pathname.substring("/cms/".length))
 
 const items = [
   getItem(

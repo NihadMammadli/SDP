@@ -1,18 +1,61 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Card, Typography, message, Button } from "antd";
+import { Row, Col, Card, Table, message, Button } from "antd";
 import axios from "axios"
 import style from "./style.module.scss"
 import './style.css'
+import socketIOClient from 'socket.io-client';
+const ENDPOINT = 'http://localhost:5000';
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
-
   const [alarms, setAlarms] = useState([])
+
+  const columns = [
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>User Id</div>,
+      dataIndex: 'user_id',
+      key: 'user_id',
+      width: '10%',
+      align: 'center',
+      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+    },
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>First Name</div>,
+      dataIndex: 'first_name',
+      key: 'first_name',
+      width: '20%',
+      align: 'center',
+      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+    },
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Last Name</div>,
+      dataIndex: 'last_name',
+      key: 'last_name',
+      width: '25%',
+      align: 'center',
+      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+    },
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Event Type</div>,
+      dataIndex: 'alarm_name',
+      key: 'alarm_name',
+      width: '20%',
+      align: 'center',
+      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+    },
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Time</div>,
+      dataIndex: 'time',
+      key: 'time',
+      width: '25%',
+      align: 'center',
+      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+    },
+  ];
 
   const getAlarms = async () => {
     try {
       const response = await axios.get('http://localhost:10000/cms/alarms');
-      console.log(response?.data)
       setAlarms(response?.data)
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -39,50 +82,40 @@ function App() {
     getAlarms();
   }, []);
 
-  return (
+  useEffect(() => {
+    const socket = socketIOClient(ENDPOINT);
 
+    socket.on('output', data => {
+      messageApi.success(`User with id ${data?.participation_id} submitted`);
+      setTimeout(getAlarms, 1000);
+    });
+
+    socket.on('similarityAlarm', data => {
+      messageApi.error(data.message);
+      setTimeout(getAlarms, 1000);
+    });
+
+    socket.on('scoringPreceding', data => {
+      messageApi.error(data.message);
+      setTimeout(getAlarms, 1000);
+    });
+
+    return () => socket.disconnect();
+  }, []);
+  return (
     <>
       {contextHolder}
       <div>
-        <Row>
-          <Col span={24}>
-            {alarms.map(alarm => (
-              <Card
-                style={{height:100, backgroundColor: getBackgroundColor(alarm.alarm_name), margin:"15px 5px 15px 5px", boxShadow: '0px 4px 5px rgba(0, 0, 1, 0.3)'}}
-                key={alarm.id}
-              >
-                <Row style={{ marginBottom: "20px" }}>
-                  <Col span={12}>
-                    <Typography className={style.alarmTopRow}>
-                      {alarm?.alarm_name}
-                    </Typography>
-                  </Col>
-                  <Col span={12}>
-                    <Typography className={style.alarmTopRow} style={{justifyContent:"end"}}>
-                      Time: {alarm?.time}
-                    </Typography>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col span={4}>
-                    <Typography className={style.alarmBottomRow}>
-                      UserID: {alarm?.user_id}
-                    </Typography>
-                  </Col>
-                  <Col span={9}>
-                    <Typography className={style.alarmBottomRow}>
-                      Name: {alarm?.first_name}
-                    </Typography>
-                  </Col>
-                  <Col span={11}>
-                    <Typography className={style.alarmBottomRow}>
-                      Surname: {alarm?.last_name}
-                    </Typography>
-                  </Col>
-
-                </Row>
-              </Card>
-            ))}
+        <Row >
+          <Col style={{height: '800px'}}span={24}>
+            <div style={{ height: '90%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <Table
+                columns={columns}
+                pagination={false}
+                dataSource={alarms.map(alarm => ({ ...alarm, key: alarm.alarm_id }))}
+                rowClassName={(record) => style[getBackgroundColor(record.alarm_name)]}
+              />
+            </div>
           </Col>
         </Row>
       </div>

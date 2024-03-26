@@ -22,7 +22,6 @@ const App = (props) => {
     const getSubmission = async (id) => {
         try {
             const response = await axios.get(`http://localhost:10000/cms/comparisons/${id}`);
-            console.log(response.data);
     
             const filteredData = response.data.filter(item => item.submission_id === id);
 

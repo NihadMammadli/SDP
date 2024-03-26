@@ -53,21 +53,18 @@ function App() {
     const socket = socketIOClient(ENDPOINT);
 
     socket.on('output', data => {
-      console.log(data);
       messageApi.success(`User with id ${data?.participation_id} submitted`);
       setLastSubmitted(data)
       setTimeout(fetchSections, 5000);
     });
 
     socket.on('similarityAlarm', data => {
-      console.log(data)
       messageApi.error(data.message);
       setLastSimilarityAlarm(data.id)
       setTimeout(fetchSections, 5000);
     });
 
     socket.on('scoringPreceding', data => {
-      console.log(data)
       messageApi.error(data.message);
       setLastScoringPreceding(data.id)
       setTimeout(fetchSections, 5000);
@@ -106,7 +103,7 @@ function App() {
                   <Col key={user?.id} span={8}
                     style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <div
-                      // onClick={(_) => showView(user)}
+                      onClick={(_) => showView(user)}
                       style={{
                         width: '100px',
                         borderRadius: "5px",
