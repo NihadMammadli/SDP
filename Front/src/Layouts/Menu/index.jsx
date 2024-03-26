@@ -16,23 +16,26 @@ const getItem = (label, key, url, icon, children) => ({
   children,
 });
 
+const { pathname } = window.location
+console.log(pathname.substring("/cms/".length))
+
 const items = [
   getItem(
     "Competitors",
-    "user",
-    `${import.meta.env.VITE_USER}`,
+    "competitors",
+    `${import.meta.env.VITE_COMPETITORS}`,
     <UserOutlined />
   ),
   getItem(
     "Alarms",
-    "notification",
-    `${import.meta.env.VITE_NOTIFICATION}`,
+    "alarms",
+    `${import.meta.env.VITE_ALARMS}`,
     <BellOutlined />
   ),
   getItem(
     "Seats",
-    "seat",
-    `${import.meta.env.VITE_SEAT}`,
+    "seats",
+    `${import.meta.env.VITE_SEATS}`,
     <AppstoreOutlined />
   ),
 ];
@@ -61,7 +64,7 @@ const Index = () => {
   };
   return (
     <Menu
-      defaultSelectedKeys="user"
+      defaultSelectedKeys={pathname.substring("/cms/".length)}
       theme="light"
       mode="inline"
       items={items}

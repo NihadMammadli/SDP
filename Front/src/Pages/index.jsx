@@ -1,5 +1,5 @@
-import Seat from "./Seat"
-import Notification from "./Notification"
-import User from "./User"
+import Seats from "./Seats"
+import Alarms from "./Alarms"
+import Competitors from "./Competitors"
 
-export {Seat, Notification, User};
+export {Seats, Alarms, Competitors};
