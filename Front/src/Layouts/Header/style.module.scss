@@ -7,14 +7,14 @@
     justify-content: start;
 }
 
-.Header{
-    border: 1px solid #1677FF;
-    border-radius: 5px;
-    margin: 5px 20px 0px 20px;
-    padding: 3px 0px 0px 20px;
+.Header {
+    border-radius: 8px;
+    margin: 20px 20px 0px 20px;
+    padding: 0px 0px 0px 20px;
     background-color: #ffffff;
     display: flex;
     align-items: center;
     height: 40px !important; 
     width: calc(100% - 40px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
 }

@@ -12,7 +12,7 @@ function App() {
 
   const columns = [
     {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>First Name</div>,
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>ID</div>,
       dataIndex: 'id',
       key: 'id',
       width: '10%',
@@ -31,7 +31,7 @@ function App() {
       title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Last Name</div>,
       dataIndex: 'last_name',
       key: 'last_name',
-      width: '20%',
+      width: '25%',
       align: 'center',
       render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
     },
@@ -44,10 +44,10 @@ function App() {
       render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
     },
     {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Username</div>,
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Email</div>,
       dataIndex: 'email',
-      key: 'username',
-      width: '20%',
+      key: 'email',
+      width: '25%',
       align: 'center',
       render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
     },
@@ -83,11 +83,11 @@ function App() {
       <div>
         <Row>
           <Col span={24}>
-            <div style={{ height: '85%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div style={{ height: '90%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <Table
                 columns={columns}
                 pagination={false}
-                dataSource={users}
+                dataSource={users.map(user => ({ ...user, key: user.id }))}
                 onRow={(record, rowIndex) => ({ onClick: () => showView(record, rowIndex) })}
               />
             </div>

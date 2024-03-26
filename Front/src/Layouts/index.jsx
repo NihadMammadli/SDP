@@ -18,12 +18,13 @@ const Index = () => {
         onCollapse={(value) => setCollapsed(value)}
         width={260}
         collapsedWidth={75}
+        style={{boxShadow: "0 5px 6px rgba(0, 0, 0, 0.2)"}}
       >
         <div style={{ borderRadius: "5px" }}>
           <div className={style.logo}>
             <Image
-              width={collapsed ? 50 : 155}
-              height={collapsed ? 30 : 100}
+              width={collapsed ? 0 : 155}
+              height={collapsed ? 0 : 100}
               src="https://upload.wikimedia.org/wikipedia/commons/2/20/Adalogonew.png"
             />
           </div>

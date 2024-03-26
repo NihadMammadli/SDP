@@ -86,6 +86,31 @@ app.get('/cms/users', async (req, res) => {
     }
 });
 
+app.get('/cms/alarms', async (req, res) => {
+    const client = createClient();
+
+    try {
+        await client.connect();
+
+        const query = `
+            SELECT alarms.id AS alarm_id, alarms.time, users.first_name, users.last_name, users.id AS user_id, alarm_types.alarm_name
+            FROM alarms
+            INNER JOIN users ON alarms.user_id = users.id
+            INNER JOIN alarm_types ON alarms.alarm_type_id = alarm_types.id
+        `;
+
+        const result = await client.query(query);
+
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        await client.end();
+    }
+});
+
+
 app.get('/cms/comparisons/:id', async (req, res) => {
     const { id } = req.params;
     const client = createClient();

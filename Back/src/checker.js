@@ -93,13 +93,20 @@ async function comparer(jsonData, io, participator) {
                                     values: [participator],
                                 });
                                 if (questionsData.rows.length > 0) {
-                                    questionsData.rows.forEach(row => {
+                                    questionsData.rows.forEach(async row => {
                                         if (row.subject && (row.subject.includes('#wc') || row.subject.includes('#print'))) {
                                             if (participator == file1ID) {
                                                 const message = {
                                                     message: `⚠️ SCORING PRECEDING ANOTHER EVENT ⚠️ \n is detected by user with id ${participator}`,
                                                     id: participator
                                                 }
+                                                const insertQuery = {
+                                                    text: 'INSERT INTO alarms(alarm_type_id, user_id) VALUES($1, $2)',
+                                                    values: [3, participator],
+                                                };
+
+                                                await client.query(insertQuery);
+                                                
                                                 io.emit('scoringPreceding', message);
                                                 participator = 0
                                             }
@@ -111,6 +118,13 @@ async function comparer(jsonData, io, participator) {
                                         message: `⚠️ SIMILARITY ALARM ⚠️ \n is detected by user with id ${participator}`,
                                         id: participator
                                     }
+                                    const insertQuery = {
+                                        text: 'INSERT INTO alarms(alarm_type_id, user_id) VALUES($1, $2)',
+                                        values: [1, participator],
+                                    };
+
+                                    await client.query(insertQuery);
+
                                     io.emit('similarityAlarm', message);
                                     participator = 0
                                 }

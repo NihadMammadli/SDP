@@ -15,7 +15,7 @@ const Index = () => {
 
   return (
     <Content  >
-      <div style={{ backgroundColor:"#efefef", margin: "20px 20px 0px 20px", padding: "10px", height: "80%", border: "1px solid black", borderRadius:"5px" }}>
+      <div style={{ backgroundColor: "#FFFFFF", margin: "20px 20px 0px 20px", padding: "10px", height: "90%", borderRadius: "8px", boxShadow: "0 3px 6px rgba(0, 0, 0, 0.2)" }}>
         <Outlet />
       </div>
     </Content>

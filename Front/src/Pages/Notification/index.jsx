@@ -1,100 +1,93 @@
-import { useState } from 'react'
-import { Row, Col, Table, Typography, message, Button } from "antd";
-import style from './style.module.scss'
-import View from './View'
+import { useState, useEffect } from 'react'
+import { Row, Col, Card, Typography, message, Button } from "antd";
 import axios from "axios"
+import style from "./style.module.scss"
+import './style.css'
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
 
-  const [users, setUsers] = useState([])
-  const [viewOpen, setViewOpen] = useState(false)
-  const [viewData, setViewData] = useState(false)
+  const [alarms, setAlarms] = useState([])
 
-  const getData = () => {
-    axios.get("http://localhost:9999/api/users").then(function (response) {
-      messageApi.success('Success');
-      setUsers(response?.data?.users)
-    })
-  }
+  const getAlarms = async () => {
+    try {
+      const response = await axios.get('http://localhost:10000/cms/alarms');
+      console.log(response?.data)
+      setAlarms(response?.data)
+    } catch (error) {
+      console.error('Error fetching sections:', error);
+      messageApi.error('Error fetching sections');
+    }
+  };
 
-  const synchronizeData = () => {
-    axios.get("http://localhost:10000/api/synchronize").then(function (response) {
-      if (response.status == 200) {
-        messageApi.success('Data Synchronized');
-      }
-    })
-  }
+  const getBackgroundColor = (alarmName) => {
+    switch (alarmName) {
+      case 'plagiarism':
+        return 'red';
+      case 'submitted':
+        return 'green';
+      case 'after-event':
+        return 'yellow';
+      case 'sudden-increase':
+        return 'orange';
+      default:
+        return 'white';
+    }
+  };
 
-  const showView = (data, index) => {
-    setViewOpen(true)
-    setViewData(data)
-  }
-
-  const viewClose = () => {
-    setViewOpen(false)
-  }
-
-  const columns = [
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>First Name</div>,
-      dataIndex: 'first_name',
-      key: 'first_name',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Last Name</div>,
-      dataIndex: 'last_name',
-      key: 'last_name',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-    {
-      title: <div style={{ fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Username</div>,
-      dataIndex: 'username',
-      key: 'username',
-      width: '33%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-  ];
-
+  useEffect(() => {
+    getAlarms();
+  }, []);
 
   return (
+
     <>
       {contextHolder}
       <div>
-        <Row style={{ height: "10%", borderBottom: "1px solid black" }}>
-          <Col style={{ marginBottom: "10px", justifyContent: "end", display: "flex", alignItems: "center", height: "60px" }} span={24}>
-            <Button className={style.Button} onClick={() => getData()}>
-              <Typography  className={style.ButtonText}>
-                Get Data
-              </Typography>
-            </Button>
-            <Button className={style.Button} onClick={() => synchronizeData()}>
-              <Typography  className={style.ButtonText}>
-                Synchronize
-              </Typography>
-            </Button>
+        <Row>
+          <Col span={24}>
+            {alarms.map(alarm => (
+              <Card
+                style={{height:100, backgroundColor: getBackgroundColor(alarm.alarm_name), margin:"15px 5px 15px 5px", boxShadow: '0px 4px 5px rgba(0, 0, 1, 0.3)'}}
+                key={alarm.id}
+              >
+                <Row style={{ marginBottom: "20px" }}>
+                  <Col span={12}>
+                    <Typography className={style.alarmTopRow}>
+                      {alarm?.alarm_name}
+                    </Typography>
+                  </Col>
+                  <Col span={12}>
+                    <Typography className={style.alarmTopRow} style={{justifyContent:"end"}}>
+                      Time: {alarm?.time}
+                    </Typography>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={4}>
+                    <Typography className={style.alarmBottomRow}>
+                      UserID: {alarm?.user_id}
+                    </Typography>
+                  </Col>
+                  <Col span={9}>
+                    <Typography className={style.alarmBottomRow}>
+                      Name: {alarm?.first_name}
+                    </Typography>
+                  </Col>
+                  <Col span={11}>
+                    <Typography className={style.alarmBottomRow}>
+                      Surname: {alarm?.last_name}
+                    </Typography>
+                  </Col>
+
+                </Row>
+              </Card>
+            ))}
           </Col>
         </Row>
-        <Row style={{ height: "90%" }}>
-          <Col span={24}>
-            <Table
-              columns={columns}
-              pagination={false}
-              dataSource={users}
-              onRow={(record, rowIndex) => ({ onClick: () => showView(record, rowIndex) })}
-            />
-          </Col >
-        </Row>
       </div>
-
-      <View open={viewOpen} close={viewClose} data={viewData} />
     </>
+
   )
 }
 

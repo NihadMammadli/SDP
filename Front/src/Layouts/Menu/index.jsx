@@ -61,7 +61,7 @@ const Index = () => {
   };
   return (
     <Menu
-    defaultSelectedKeys="user"
+      defaultSelectedKeys="user"
       theme="light"
       mode="inline"
       items={items}
