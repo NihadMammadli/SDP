@@ -10,9 +10,7 @@ function App() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const [sections, setSections] = useState([]);
-  const [lastSubmitted, setLastSubmitted] = useState([]);
-  const [lastSimilarityAlarm, setLastSimilarityAlarm] = useState([]);
-  const [lastScoringPreceding, setLastScoringPreceding] = useState([]);
+  const [userStatus, setUserStatus] = useState({});
   const [blink, setBlink] = useState(false);
 
   const [viewOpen, setViewOpen] = useState(false)
@@ -29,9 +27,6 @@ function App() {
 
 
   const fetchSections = async () => {
-    setLastSubmitted([])
-    setLastSimilarityAlarm([])
-    setLastScoringPreceding([])
     try {
       const response = await axios.get('http://localhost:10000/cms/sections');
       setSections(response.data);
@@ -54,19 +49,46 @@ function App() {
 
     socket.on('output', data => {
       messageApi.success(`User with id ${data?.participation_id} submitted`);
-      setLastSubmitted(data)
+      setUserStatus(prevStatus => ({
+        ...prevStatus,
+        [data.participation_id]: { lastSubmitted: true }
+      }));
+      setTimeout(() => {
+        setUserStatus(prevStatus => ({
+          ...prevStatus,
+          [data.participation_id]: { lastSubmitted: false }
+        }));
+      }, 5000); // Reset after 2 seconds
       setTimeout(fetchSections, 5000);
     });
 
     socket.on('similarityAlarm', data => {
       messageApi.error(data.message);
-      setLastSimilarityAlarm(data.id)
+      setUserStatus(prevStatus => ({
+        ...prevStatus,
+        [data.id]: { lastSimilarityAlarm: true }
+      }));
+      setTimeout(() => {
+        setUserStatus(prevStatus => ({
+          ...prevStatus,
+          [data.id]: { lastSimilarityAlarm: false }
+        }));
+      }, 5000); // Reset after 2 seconds
       setTimeout(fetchSections, 5000);
     });
 
     socket.on('scoringPreceding', data => {
       messageApi.error(data.message);
-      setLastScoringPreceding(data.id)
+      setUserStatus(prevStatus => ({
+        ...prevStatus,
+        [data.id]: { lastScoringPreceding: true }
+      }));
+      setTimeout(() => {
+        setUserStatus(prevStatus => ({
+          ...prevStatus,
+          [data.id]: { lastScoringPreceding: false }
+        }));
+      }, 5000); // Reset after 2 seconds
       setTimeout(fetchSections, 5000);
     });
 
@@ -106,17 +128,19 @@ function App() {
                       onClick={(_) => showView(user)}
                       style={{
                         width: '100px',
-                        borderRadius: "5px",
+                        borderRadius: '5px',
                         height: '100px',
-                        backgroundColor: user?.id === lastSubmitted?.participation_id ? (user?.id === lastSimilarityAlarm ? 'red' : (user?.id === lastScoringPreceding ? 'yellow' : (blink ? 'green' : 'white'))) : 'white',
+                        backgroundColor: (userStatus[user.id]?.lastSubmitted && 'green') ||
+                          (userStatus[user.id]?.lastSimilarityAlarm && 'red') ||
+                          (userStatus[user.id]?.lastScoringPreceding && 'yellow') ||
+                          (blink ? 'white' : 'white'), // Adjust according to your logic
                         display: 'flex',
-                        transition: "border-color 0.3s ease",
-                        border: "1px solid transparent",
-                        flexDirection: "column",
-                        boxShadow: "0 5px 6px rgba(15, 15, 15, 0.1)",
+                        transition: 'background-color 0.3s ease',
+                        border: '1px solid transparent',
+                        flexDirection: 'column',
+                        boxShadow: '0 5px 6px rgba(15, 15, 15, 0.1)',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        transition: 'background-color 0.5s ease'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.borderColor = "#1677FF";
