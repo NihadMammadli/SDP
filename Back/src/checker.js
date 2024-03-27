@@ -150,7 +150,6 @@ async function comparer(jsonData, io, participator) {
 
                             await client.query(insertQuery);
 
-                            // console.log(`Inserted comparison data for submission ${outerKey} and submission ${innerKey} in task ${taskID}`);
                         } else {
                             // console.log(`Comparison data for submission ${outerKey} and submission ${innerKey} already exists in the database`);
                         }

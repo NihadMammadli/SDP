@@ -17,7 +17,7 @@
     "cosmiconfig": "^9.0.0",
     "express": "^4.18.2",
     "pg": "^8.11.3",
-    "puppeteer": "^21.10.0",
+    "puppeteer": "^22.6.1",
     "puppeteer-core": "^21.10.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",

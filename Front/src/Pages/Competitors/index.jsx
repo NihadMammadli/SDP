@@ -82,7 +82,7 @@ function App() {
       {contextHolder}
       <div>
         <Row>
-          <Col span={24}>
+        <Col style={{height: '800px'}}span={24}>
             <div style={{ height: '90%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <Table
                 columns={columns}
