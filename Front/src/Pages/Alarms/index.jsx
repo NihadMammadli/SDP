@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Row, Col, Card, Table, message, Button } from "antd";
 import axios from "axios"
-import style from "./style.module.scss"
+import { ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import './style.css'
 import socketIOClient from 'socket.io-client';
-const ENDPOINT = 'http://localhost:5000';
+const ENDPOINT = `${import.meta.env.VITE_BASE}`;
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -12,34 +12,30 @@ function App() {
 
   const columns = [
     {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>User Id</div>,
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>User ID</div>,
       dataIndex: 'user_id',
       key: 'user_id',
-      width: '10%',
+      width: '5%',
       align: 'center',
       render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
     },
     {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>First Name</div>,
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Full Name</div>,
       dataIndex: 'first_name',
       key: 'first_name',
       width: '20%',
       align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+      render: (text, record) => (
+        <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {record?.first_name} {record?.last_name}
+        </div>
+      ),
     },
     {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Last Name</div>,
-      dataIndex: 'last_name',
-      key: 'last_name',
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Username</div>,
+      dataIndex: 'username',
+      key: 'username',
       width: '25%',
-      align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
-    },
-    {
-      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Event Type</div>,
-      dataIndex: 'alarm_name',
-      key: 'alarm_name',
-      width: '20%',
       align: 'center',
       render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
     },
@@ -49,13 +45,50 @@ function App() {
       key: 'time',
       width: '25%',
       align: 'center',
-      render: text => <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{text}</div>,
+      render: text => {
+        const formattedTime = new Date(text).toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+        });
+        return (
+          <div style={{ fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {formattedTime}
+          </div>
+        );
+      },
+    },
+    {
+      title: <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Event Type</div>,
+      dataIndex: 'alarm_name',
+      key: 'alarm_name',
+      width: '10%',
+      align: 'center',
+      render: text =>
+        <div
+          style={{
+            background: "#FAFAFA",
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap:"8px",
+            justifyContent: 'center',
+            color: text === "after-event" ? "#F9AA33" : (text === "plagiarism" ? "#FF0000" : "black")
+          }}
+        >
+          {text == "after-event" ? <ExclamationCircleOutlined/> : <WarningOutlined/>} {text.charAt(0).toUpperCase() + text.slice(1)}
+        </div>,
+        
     },
   ];
 
   const getAlarms = async () => {
     try {
-      const response = await axios.get('http://localhost:10000/cms/alarms');
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API}/cms/alarms`);
+      
       setAlarms(response?.data)
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -83,7 +116,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
+    const socket = socketIOClient(import.meta.env.VITE_BASE_SOCKET);
 
     socket.on('output', data => {
       messageApi.success(`User with id ${data?.participation_id} submitted`);
@@ -107,13 +140,13 @@ function App() {
       {contextHolder}
       <div>
         <Row >
-          <Col style={{height: '800px'}}span={24}>
+          <Col style={{ height: '800px' }} span={24}>
             <div style={{ height: '90%', overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               <Table
                 columns={columns}
                 pagination={false}
                 dataSource={alarms.map(alarm => ({ ...alarm, key: alarm.alarm_id }))}
-                rowClassName={(record) => style[getBackgroundColor(record.alarm_name)]}
+                bordered
               />
             </div>
           </Col>

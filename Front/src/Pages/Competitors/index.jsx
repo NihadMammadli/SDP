@@ -64,7 +64,7 @@ function App() {
 
   const fetchSections = async () => {
     try {
-      const response = await axios.get('http://localhost:10000/cms/users');
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API}/cms/users`);
       setUsers(response?.data);
     } catch (error) {
       console.error('Error fetching sections:', error);

@@ -62,17 +62,16 @@ function lcs(X, Y) {
     return dp[m][n];
 }
 
-async function cppChecker(code1, code2) {
-    const code1WithoutComments = remover(code1.split(EOL));
-    const code2WithoutComments = remover(code2.split(EOL));
+function cppChecker(code1, code2) {
+    const tokenSet1 = new Set(code1.split(/\b/).filter(token => token.trim()));
+    const tokenSet2 = new Set(code2.split(/\b/).filter(token => token.trim()));
 
-    const commonLinesCount = lcs(code1WithoutComments, code2WithoutComments);
-    const totalLines = Math.max(code1WithoutComments.length, code2WithoutComments.length);
-    const similarity = totalLines > 0 ? commonLinesCount / totalLines : 0;
+    const intersection = new Set([...tokenSet1].filter(token => tokenSet2.has(token)));
+    const union = new Set([...tokenSet1, ...tokenSet2]);
 
-    const commonLines = new Set(code1WithoutComments.filter(line => code2WithoutComments.includes(line)));
+    const similarity = union.size > 0 ? intersection.size / union.size : 0;
 
-    return { similarity, commonLines };
+    return { similarity, commonTokens: Array.from(intersection) };
 }
 
 async function comparer(jsonData, io, participator) {

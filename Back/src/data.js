@@ -93,7 +93,7 @@ app.get('/cms/alarms', async (req, res) => {
         await client.connect();
 
         const query = `
-        SELECT alarms.id AS alarm_id, alarms.time, users.first_name, users.last_name, users.id AS user_id, alarm_types.alarm_name
+        SELECT alarms.id AS alarm_id, alarms.time, users.first_name, users.last_name, users.username, users.id AS user_id, alarm_types.alarm_name
         FROM alarms
         INNER JOIN users ON alarms.user_id = users.id
         INNER JOIN alarm_types ON alarms.alarm_type_id = alarm_types.id

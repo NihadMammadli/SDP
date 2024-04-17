@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Row, Col, Table, Typography, message, Button } from "antd";
-import style from './style.module.scss';
 import axios from "axios";
 import View from './View'
 import socketIOClient from 'socket.io-client';
-const ENDPOINT = 'http://localhost:5000';
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
@@ -28,7 +26,7 @@ function App() {
 
   const fetchSections = async () => {
     try {
-      const response = await axios.get('http://localhost:10000/cms/sections');
+      const response = await axios.get(`${import.meta.env.VITE_BASE_API}/cms/sections`);
       setSections(response.data);
     } catch (error) {
       console.error('Error fetching sections:', error);
@@ -45,7 +43,7 @@ function App() {
       setBlink(prevBlink => !prevBlink);
     }, 500);
 
-    const socket = socketIOClient(ENDPOINT);
+    const socket = socketIOClient(import.meta.env.VITE_BASE_SOCKET);
 
     socket.on('output', data => {
       messageApi.success(`User with id ${data?.participation_id} submitted`);
@@ -58,7 +56,7 @@ function App() {
           ...prevStatus,
           [data.participation_id]: { lastSubmitted: false }
         }));
-      }, 5000); // Reset after 2 seconds
+      }, 5000); 
       setTimeout(fetchSections, 5000);
     });
 
