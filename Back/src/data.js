@@ -3,18 +3,18 @@ const { Client } = require('pg');
 const fs = require('fs').promises;
 const path = require('path');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const port = 10000;
 
 const dbConfig = {
-    user: 'cmsuser',
-    password: '1234',
-    database: 'cmsdb',
-    host: 'localhost',
-    port: 5432,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
 };
-
 const createClient = () => new Client(dbConfig);
 
 app.use(cors());

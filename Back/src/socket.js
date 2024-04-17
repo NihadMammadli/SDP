@@ -3,6 +3,7 @@ const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const checker = require('./checker.js');
+require('dotenv').config();
 
 const http = require('http');
 const socketIo = require('socket.io');
@@ -12,11 +13,11 @@ const express = require('express');
 const app = express(); 
 
 const client = new Client({
-    user: 'cmsuser',
-    password: '1234',
-    database: 'cmsdb',
-    host: 'localhost',
-    port: 5432,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
 });
 
 let lastTimestamp = null;
@@ -44,7 +45,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.CMS_SOCKET,
         methods: ["GET", "POST"]
     }
 });

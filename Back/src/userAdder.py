@@ -2,12 +2,16 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 import json
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 with open('users.json') as f:
     users = json.load(f)
 
 def fetch_submission_content():
-    url = 'http://localhost:8889/login'
+    url = f"{os.getenv("CMS_ADMIN")}/login"
     username = 'nihad'
     password = 'vrmzyx'
     session = requests.Session()
@@ -37,7 +41,7 @@ def fetch_submission_content():
                 'timezone': '',  
                 'preferred_languages': 'aze'  
             }
-            submission_url = f'http://localhost:8889/users/add'
+            submission_url = f"{os.getenv("CMS_ADMIN")}/users/add"
             session.post(submission_url, data=userData)
             
     else:

@@ -1,13 +1,14 @@
 const { Client } = require('pg');
 const exec = require('child_process').exec;
 const fs = require('fs');
+require('dotenv').config();
 
 const dbConfig = {
-    user: 'cmsuser',
-    password: '1234',
-    database: 'cmsdb',
-    host: 'localhost',
-    port: 5432,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
 };
 
 const client = new Client(dbConfig);

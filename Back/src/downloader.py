@@ -1,10 +1,14 @@
 import sys
 import requests
 from bs4 import BeautifulSoup
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 def fetch_submission_content(submission_id):
     if submission_id:
-        url = 'http://localhost:8889/login'
+        url = f"{os.getenv("CMS_ADMIN")}/login"
         username = 'nihad'
         password = 'vrmzyx'
         session = requests.Session()
@@ -22,7 +26,7 @@ def fetch_submission_content(submission_id):
         login_response = session.post(url, data=login_data)
 
         if login_response.status_code == 200:
-            submission_url = f'http://localhost:8889/submission_file/{submission_id}'
+            submission_url = f'{os.getenv("CMS_ADMIN")}/submission_file/{submission_id}'
             submission_response = session.get(submission_url)
 
             if submission_response.status_code == 200:

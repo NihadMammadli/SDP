@@ -1,12 +1,13 @@
 const { Client } = require('pg');
 const { exec } = require('child_process');
+require('dotenv').config();
 
 const client = new Client({
-    user: 'cmsuser',
-    password: '1234',
-    database: 'cmsdb',
-    host: 'localhost',
-    port: 5432,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
 });
 
 let lastTimestamp = null;
