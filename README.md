@@ -1,8 +1,8 @@
 # Plagiarism Checker with CMS Integration
-___
+
 ## Overview
 This project is a robust plagiarism checker application designed to seamlessly integrate with Content Management Systems (CMS). It empowers users to detect plagiarism in text content while operating within their preferred CMS environment. The front end of the application is built using React, providing a modern and responsive user interface, while the back end leverages Node.js for scalability and efficient handling of requests.
-___
+
 ## Features
 #### Plagiarism Checking: 
 The primary feature of this application is its plagiarism detection capability, which compares user submissions to identify similarities and reduce instances of academic dishonesty.
@@ -16,9 +16,9 @@ The back end of the application is powered by Node.js, enabling efficient handli
 The application exposes APIs that facilitate integration with third-party services and CMS platforms, allowing for seamless data exchange and extensibility.
 #### Customization: 
 Users have the flexibility to customize plagiarism detection settings and thresholds according to their specific requirements, enhancing the adaptability of the application.
-___
+
 ## Installation
-___
+
 ## Prerequisites
 Node.js and npm or yarn installed on your system.
 React development environment set up.
