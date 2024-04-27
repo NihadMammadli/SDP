@@ -19,33 +19,41 @@ Users have the flexibility to customize plagiarism detection settings and thresh
 
 ## Installation
 
-## Prerequisites
+### Prerequisites
 Node.js and npm or yarn installed on your system.
 React development environment set up.
 PostgreSql installed and running.
 
-𝗦𝘁𝗲𝗽𝘀
-Clone the repository to your local machine:
+### Steps
+
+#### 1. Clone the repository to your local machine:
+```
     git clone https://github.com/NihadMammadli/SDP
+```
 
-Navigate to the project directory:
+#### 2. Navigate to the project directory:
+```
     cd SDP
+```
 
-Install dependencies for both the front end and back end:
+#### 3. Install dependencies for both the front end and back end:
+```
 cd Front
 yarn
 cd ../Back/NodeJS
 npm install
+```
 
-Start the front end:
+#### 4. Start the front end:
+```
 cd ../frontend
 yarn dev
+```
+#### 5. Access the application in your browser at `http://localhost:3000`.
 
-Access the application in your browser at http://localhost:3000.
-
-𝗟𝗶𝗰𝗲𝗻𝘀𝗲
+## License
 This project is licensed under the ADA University.
 
-𝗖𝗼𝗻𝘁𝗮𝗰𝘁
+## Contact
 For any inquiries or support, feel free to contact the project maintainers at 
 nihadm03@gmail.com or mirvari.mammadli@gmail.com.
