@@ -78,33 +78,27 @@ The Alarms page offers real-time monitoring of submissions and other critical ac
 ![Alarms](https://github.com/NihadMammadli/SDP/assets/78195890/45617126-59d1-4adf-a07e-b9f15ccab68c)
 
 ### Enhancements and Features:
-***
 #### User Profiles and Details: 
----
 The Competitors page can include detailed user profiles, showcasing relevant information such as user ID, name, role, and contact details.
 Interactive Seats Plan: The Seats page could incorporate interactive features, such as seat selection and assignment capabilities, to streamline seating management.
 Real-time Notifications: Enhance the Alarms page with real-time notifications and alerts, ensuring timely responses to important system activities and events.
 Usability and Navigation:
 
 #### User-Friendly Interface: 
----
 Design a user-friendly interface with intuitive navigation, enabling effortless exploration of competitors, seats, and alarms functionalities.
 Responsive Design: Implement responsive design principles to ensure seamless usability across different devices and screen sizes, enhancing accessibility for all users.
 Integration and Scalability:
 
 #### CMS Integration: 
----
 Integrate the project seamlessly with existing CMS systems, enabling data synchronization and leveraging CMS functionalities within the application.
 Scalable Architecture: Design the project with a scalable architecture to accommodate future enhancements and expansions, ensuring flexibility and adaptability over time.
 Feedback and Collaboration:
 
 #### Feedback Mechanism: 
----
 Implement a feedback mechanism to gather user insights and suggestions for continuous improvement and refinement of the project.
 Collaboration Opportunities: Encourage collaboration and contributions from the community to enhance project features and address user needs effectively.
 
 ### Conclusion:
----
 The project aims to provide a comprehensive and user-centric experience through its Competitors, Seats, and Alarms functionalities. By focusing on usability, integration, and scalability, the project seeks to optimize event management and monitoring within CMS environments, fostering efficiency and transparency in competition logistics and participant interactions.
 
 ## License
