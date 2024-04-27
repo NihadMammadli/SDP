@@ -20,9 +20,9 @@ Users have the flexibility to customize plagiarism detection settings and thresh
 ## Installation
 
 ### Prerequisites
-Node.js and npm or yarn installed on your system.
-React development environment set up.
-PostgreSql installed and running.
++ Node.js and npm or yarn installed on your system.
++ React development environment set up.
++ PostgreSql installed and running.
 
 ### Steps
 
@@ -49,7 +49,20 @@ npm install
 cd ../frontend
 yarn dev
 ```
-#### 5. Access the application in your browser at `http://localhost:3000`.
+
+#### 5. Start the back end:
+```
+cd ../backend
+cd /src
+node server.js
+```
+
+#### 6. Access the application in your browser at `http://localhost:3000`.
+
+## Demo
+![Competitors](https://github.com/NihadMammadli/SDP/assets/78195890/a79f6d65-c851-4582-86f0-885d93581d81)
+![Alarms](https://github.com/NihadMammadli/SDP/assets/78195890/45617126-59d1-4adf-a07e-b9f15ccab68c)
+![Seats](https://github.com/NihadMammadli/SDP/assets/78195890/2a57f408-3584-4ee3-bc2a-22a80bd55a8e)
 
 ## License
 This project is licensed under the ADA University.
