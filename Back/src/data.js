@@ -9,6 +9,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 const port = 10000;
 
+
 const dbConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
