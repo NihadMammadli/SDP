@@ -3,7 +3,8 @@ const { promisify } = require('util');
 const { EOL } = require('os');
 const { Client } = require('pg');
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const dbConfig = {
     user: process.env.DB_USER,
@@ -142,7 +143,7 @@ async function comparer(jsonData, io, participator) {
                         const { rowCount } = await client.query(existingComparisonQuery);
 
                         if (rowCount === 0) {
-                            const commonLinesList = Array.from(commonLines);
+                            // const commonLinesList = Array.from(commonLines);
 
                             const insertQuery = {
                                 text: 'INSERT INTO comparisons(submission_id, compared_contestant_id, similarity_score, status) VALUES($1, $2, $3, $4)',

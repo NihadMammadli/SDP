@@ -8,7 +8,7 @@ load_dotenv()
 
 def fetch_submission_content(submission_id):
     if submission_id:
-        url = f"{os.getenv("CMS_ADMIN")}/login"
+        url = url = f"{os.getenv('CMS_ADMIN')}/login"
         username = 'nihad'
         password = 'vrmzyx'
         session = requests.Session()

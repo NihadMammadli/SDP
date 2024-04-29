@@ -1,9 +1,9 @@
 const { Client } = require('pg');
 const { exec } = require('child_process');
-const path = require('path');
 const fs = require('fs');
 const checker = require('./checker.js');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const http = require('http');
 const socketIo = require('socket.io');

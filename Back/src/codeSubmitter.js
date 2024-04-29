@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
-require('dotenv').config();
+
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 (async () => {
     const usersData = await fs.readFile('users.json');
@@ -24,6 +26,7 @@ require('dotenv').config();
 
             await page.click('button.btn.btn-primary.btn-large[type=submit]');
 
+            
             await page.goto(`${process.env.CMS_USER}/tasks/Cube/submissions`);
 
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -39,7 +42,7 @@ require('dotenv').config();
             await page.waitForSelector('button.btn.btn-warning');
             await page.click('button.btn.btn-warning');
 
-            const randomDelay = Math.floor(Math.random() * 1000) + 2000;
+            const randomDelay = Math.floor(Math.random() * 1000) + 4000;
 
             await browser.close();
         }
